@@ -1,0 +1,51 @@
+# User-specific files
+*.suo
+*.sln.user
+*.csproj.user
+*.userosscache
+*.sln.docstates
+
+# User-specific files (MonoDevelop/Xamarin Studio)
+*.userprefs
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+
+# Visual Studio cache/options directory
+.vs/
+
+# ReSharper is a .NET coding add-in
+_ReSharper*/
+*.[Rr]e[Ss]harper
+*.DotSettings.user
+
+# NCrunch
+_NCrunch_*
+.*crunch*.local.xml
+nCrunchTemp_*
+*.ncrunchproject.user
+*.ncrunchsolution.user
+*.ncrunchsolution
+*.ncrunchproject
+
+# NuGet v3's project.json files produces more ignorable files
+*.nuget.props
+*.nuget.targets
+
+**/bin/*
+**/obj/*
+**/packages/
+**/.vs/
+**/*.g.wxs
+
+# macOS folder settings
+*.DS_Store
