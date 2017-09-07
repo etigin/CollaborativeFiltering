@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using FluentAssertions;
 using Newtonsoft.Json;
 using Xunit;
@@ -32,6 +33,23 @@ namespace CollaborativeFilteringTests
 
             var score = SimilarityScoreCalculator.Calculate(lizaPref, genePref, new PearsonMetric());
             score.Should().BeApproximately(0.396, 0.001);
+        }
+
+        [Fact]
+        public void UsersWithSimilarTasteTest()
+        {
+            var data = DataReader.ReadFileContent("SampleData//critics.json");
+            var dict = DataReader.DeserializeData<Dictionary<string, Dictionary<string, double>>>(data);
+
+            var top3 = SimilarityScoreCalculator.GetUsersWithSimilarTaste(dict, "Toby", new PearsonMetric(), 3).ToList();
+
+            top3[0].Key.Should().Be("Lisa Rose");
+            top3[1].Key.Should().Be("Mick LaSalle");
+            top3[2].Key.Should().Be("Claudia Puig");
+
+            top3[0].Value.Should().BeApproximately(0.991, 0.001);
+            top3[1].Value.Should().BeApproximately(0.924, 0.001);
+            top3[2].Value.Should().BeApproximately(0.893, 0.001);
         }
     }
 }

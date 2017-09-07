@@ -20,5 +20,26 @@ namespace CollaborativeFiltering
 
             return metric.Calculate(prefs);
         }
+
+        public static IEnumerable<KeyValuePair<string, double>> GetUsersWithSimilarTaste(Dictionary<string, Dictionary<string, double>> preferences, string personName, IScoreMetric metric, int usersCount)
+        {
+            var scores = new Dictionary<string, double>();
+            foreach (var prefPair in preferences)
+            {
+                if (prefPair.Key == personName)
+                    continue;
+
+                double score = Calculate(preferences[personName], prefPair.Value, metric);
+                scores.Add(prefPair.Key, score);
+            }
+
+            var result = new List<KeyValuePair<string, double>>(usersCount);
+            foreach(var t in scores.OrderByDescending(x => x.Value).Take(usersCount))
+            {
+                result.Add(t);
+            }
+
+            return result;
+        }
     }
 }
