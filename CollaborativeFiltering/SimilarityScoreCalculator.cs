@@ -6,19 +6,19 @@ namespace CollaborativeFiltering
 {
     public class SimilarityScoreCalculator
     {
-        public static double CalculateEuclideanDistance(Dictionary<string, double> firstPref, Dictionary<string, double> secondPref)
+        public static double Calculate(Dictionary<string, double> firstPref, Dictionary<string, double> secondPref, IScoreMetric metric)
         {
             var common = firstPref.Keys.Intersect(secondPref.Keys).ToList();
             if (common.Count == 0)
                 return 0;
 
-            double sumOfSquares = 0;
+            var prefs = new Dictionary<string, (double, double)>();
             foreach (var key in common)
             {
-                sumOfSquares += Math.Pow(firstPref[key] - secondPref[key], 2);
+                prefs.Add(key, (firstPref[key], secondPref[key]));
             }
 
-            return 1 / (1 + Math.Sqrt(sumOfSquares));
+            return metric.Calculate(prefs);
         }
     }
 }

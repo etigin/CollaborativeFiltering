@@ -18,7 +18,7 @@ namespace CollaborativeFilteringTests
             var lizaPref = dict["Lisa Rose"];
             var genePref = dict["Gene Seymour"];
 
-            var score = SimilarityScoreCalculator.CalculateEuclideanDistance(lizaPref, genePref);
+            var score = SimilarityScoreCalculator.Calculate(lizaPref, genePref, new EuclideanDistanceMetric());
             score.Should().BeApproximately(0.294, 0.001);
         }
     }
