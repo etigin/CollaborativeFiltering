@@ -53,6 +53,23 @@ namespace CollaborativeFilteringTests
         }
 
         [Fact]
+        public void SimilarItemsTest()
+        {
+            var data = DataReader.ReadFileContent("SampleData//critics.json");
+            var dict = DataReader.DeserializeData<Dictionary<string, Dictionary<string, double>>>(data);
+
+            var top3 = SimilarityScoreCalculator.GetSimilarItems(dict, "Superman Returns", new PearsonMetric(), 3).ToList();
+
+            top3[0].Key.Should().Be("You, Me and Dupree");
+            top3[1].Key.Should().Be("Lady in the Water");
+            top3[2].Key.Should().Be("Snakes on a Plane");
+
+            top3[0].Value.Should().BeApproximately(0.657, 0.001);
+            top3[1].Value.Should().BeApproximately(0.487, 0.001);
+            top3[2].Value.Should().BeApproximately(0.111, 0.001);
+        }
+
+        [Fact]
         public void RecommendationsTest()
         {
             var data = DataReader.ReadFileContent("SampleData//critics.json");

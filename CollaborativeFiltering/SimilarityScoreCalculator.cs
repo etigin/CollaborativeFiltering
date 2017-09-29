@@ -24,23 +24,27 @@ namespace CollaborativeFiltering
         public static IEnumerable<KeyValuePair<string, double>> GetUsersWithSimilarTaste(Dictionary<string, Dictionary<string, double>> preferences,
             string personName, IScoreMetric metric, int usersCount)
         {
-            var scores = new Dictionary<string, double>();
+            return GetTopMatches(preferences, personName, metric, usersCount);
+        }
+
+        public static IEnumerable<KeyValuePair<string, double>> GetSimilarItems(Dictionary<string, Dictionary<string, double>> preferences,
+            string itemName, IScoreMetric metric, int itemsCount)
+        {
+            var transformedPrefs = new Dictionary<string, Dictionary<string, double>>();
             foreach (var prefPair in preferences)
             {
-                if (prefPair.Key == personName)
-                    continue;
+                foreach (var item in prefPair.Value)
+                {
+                    if (!transformedPrefs.ContainsKey(item.Key))
+                    {
+                        transformedPrefs[item.Key] = new Dictionary<string, double>();
+                    }
 
-                double score = Calculate(preferences[personName], prefPair.Value, metric);
-                scores.Add(prefPair.Key, score);
+                    transformedPrefs[item.Key].Add(prefPair.Key, item.Value);
+                }
             }
 
-            var result = new List<KeyValuePair<string, double>>(usersCount);
-            foreach (var t in scores.OrderByDescending(x => x.Value).Take(usersCount))
-            {
-                result.Add(t);
-            }
-
-            return result;
+            return GetTopMatches(transformedPrefs, itemName, metric, itemsCount);
         }
 
         public static IEnumerable<KeyValuePair<string, double>> GetRecommendations(Dictionary<string, Dictionary<string, double>> preferences,
@@ -81,6 +85,28 @@ namespace CollaborativeFiltering
             }
 
             return result.OrderByDescending(x => x.Value).Take(usersCount);
+        }
+
+        private static IEnumerable<KeyValuePair<string, double>> GetTopMatches(Dictionary<string, Dictionary<string, double>> preferences,
+            string prefKey, IScoreMetric metric, int count)
+        {
+            var scores = new Dictionary<string, double>();
+            foreach (var prefPair in preferences)
+            {
+                if (prefPair.Key == prefKey)
+                    continue;
+
+                double score = Calculate(preferences[prefKey], prefPair.Value, metric);
+                scores.Add(prefPair.Key, score);
+            }
+
+            var result = new List<KeyValuePair<string, double>>(count);
+            foreach (var t in scores.OrderByDescending(x => x.Value).Take(count))
+            {
+                result.Add(t);
+            }
+
+            return result;
         }
     }
 }
